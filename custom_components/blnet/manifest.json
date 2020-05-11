@@ -1,0 +1,10 @@
+{
+  "domain": "blnet",
+  "name": "BLNET",
+  "documentation": "https://github.com/nielstron/ha-config/blob/master/README.md",
+  "requirements": [
+    "pyblnet==0.8.0"
+  ],
+  "dependencies": [],
+  "codeowners": ["@nielstron"]
+}
