@@ -1,4 +1,6 @@
-## Setting up BLNet
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+
+# BLNET custom component for Home Assistant
 
 So there is a freely pogrammable heating controller called [UVR1611 by Technische Alternative](https://www.ta.co.at/en/freely-programmable/uvr1611/). Recently I wanted to have its data displayed in Home Assistant [(already accomplished that once via "UVR1611 Data Logger")](https://community.home-assistant.io/t/hooking-up-the-uvr1611-data-logger-over-wifi/24499). For that you need either the BLNET device or the CLI, in this case some scripts have been developed to assist integrating UVR data via a BLNET device.
 
