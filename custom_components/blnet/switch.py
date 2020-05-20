@@ -7,7 +7,11 @@ import logging
 
 from homeassistant.const import (
     STATE_UNKNOWN)
-from homeassistant.components.switch import SwitchDevice
+
+try:
+    from homeassistant.components.switch import SwitchEntity
+except ImportError:
+    from homeassistant.components.switch import SwitchDevice as SwitchEntity
 
 _LOGGER = logging.getLogger(__name__)
 
