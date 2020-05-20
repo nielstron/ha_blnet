@@ -33,7 +33,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     return True
 
 
-class BLNETSwitch(SwitchDevice):
+class BLNETSwitch(SwitchEntity):
     """
     Representation of a switch that toggles a digital output of the UVR1611.
     """
@@ -121,7 +121,7 @@ class BLNETSwitch(SwitchDevice):
     def assumed_state(self)->bool:
         return self._assumed_state
 
-class BLNETModeSwitch(SwitchDevice):
+class BLNETModeSwitch(SwitchEntity):
     """
     Representation of a switch that toggles the operation mode
     of a digital output of the UVR1611. On means automated
