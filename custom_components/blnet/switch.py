@@ -6,7 +6,10 @@ Switch to control digital outputs
 import logging
 
 from homeassistant.const import (
-    STATE_UNKNOWN)
+    STATE_UNKNOWN,
+    STATE_OFF,
+    STATE_ON,
+)
 
 try:
     from homeassistant.components.switch import SwitchEntity
@@ -70,10 +73,10 @@ class BLNETSwitch(SwitchEntity):
 
         self._friendly_name = sensor_data.get('friendly_name')
         if sensor_data.get('value') == 1:
-            self._state = 'on'
+            self._state = STATE_ON
         # Nonautomated switch, toggled off => switch off
         else:
-            self._state = 'off'
+            self._state = STATE_OFF
         self._icon = sensor_data.get('icon')
         self._mode = sensor_data.get('mode')
 
@@ -112,18 +115,19 @@ class BLNETSwitch(SwitchEntity):
     def turn_on(self, **kwargs):
         """Turn the device on."""
         self.communication.turn_on(self._id)
-        self._state = 'on'
+        self._state = STATE_ON
         self._assumed_state = True
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
         self.communication.turn_off(self._id)
-        self._state = 'off'
+        self._state = STATE_OFF
         self._assumed_state = True
 
     @property
-    def assumed_state(self)->bool:
+    def assumed_state(self) -> bool:
         return self._assumed_state
+
 
 class BLNETModeSwitch(SwitchEntity):
     """
@@ -160,10 +164,10 @@ class BLNETModeSwitch(SwitchEntity):
         self._friendly_name = "{} automated".format(
             sensor_data.get('friendly_name'))
         if sensor_data.get('mode') == 'HAND':
-            self._state = 'off'
+            self._state = STATE_OFF
             self._icon = 'mdi:gesture-tap'
         else:
-            self._state = 'on'
+            self._state = STATE_ON
             self._icon = 'mdi:settings'
         
         self._activation_state = sensor_data.get('value')
@@ -201,7 +205,7 @@ class BLNETModeSwitch(SwitchEntity):
     def turn_on(self, **kwargs):
         """Turn the device on."""
         self.communication.turn_auto(self._id)
-        self._state = 'on'
+        self._state = STATE_ON
         self._assumed_state = True
 
     def turn_off(self, **kwargs):
@@ -210,7 +214,7 @@ class BLNETModeSwitch(SwitchEntity):
             self.communication.turn_on(self._id)
         else:
             self.communication.turn_off(self._id)
-        self._state = 'off'
+        self._state = STATE_OFF
         self._assumed_state = True
 
     @property
