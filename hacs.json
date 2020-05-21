@@ -2,5 +2,6 @@
     "name": "BLNET",
     "content_in_root": false,
     "domains": ["blnet", "sensor", "switch"],
-    "render_readme": true
+    "render_readme": true,
+    "iot_class": "local_poll"
 }
