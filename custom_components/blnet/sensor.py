@@ -1,6 +1,5 @@
 """
 Connect to a BL-NET via it's web interface and read and write data
-TODO: as component
 """
 import logging
 

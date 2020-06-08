@@ -3,7 +3,7 @@
   "name": "BLNET",
   "documentation": "https://github.com/nielstron/ha-config/blob/master/README.md",
   "requirements": [
-    "pyblnet==0.8.0"
+    "pyblnet==0.9.0"
   ],
   "dependencies": [],
   "codeowners": ["@nielstron"]

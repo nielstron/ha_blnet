@@ -1,6 +1,5 @@
 """
 Connect to a BL-NET via it's web interface and read and write data
-TODO: as component
 """
 import logging
 
@@ -17,7 +16,7 @@ import time
 import homeassistant.helpers.config_validation as cv
 
 REQUIREMENTS = [
-    'pyblnet==0.8.0'
+    'pyblnet==0.9.0'
 ]
 
 _LOGGER = logging.getLogger(__name__)
