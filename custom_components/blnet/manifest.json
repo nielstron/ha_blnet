@@ -1,7 +1,7 @@
 {
   "domain": "blnet",
   "name": "BLNET",
-  "documentation": "https://github.com/nielstron/ha-config/blob/master/README.md",
+  "documentation": "https://github.com/nielstron/ha_blnet/blob/master/README.md",
   "requirements": [
     "pyblnet==0.9.0"
   ],
