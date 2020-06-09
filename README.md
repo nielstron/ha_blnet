@@ -13,6 +13,8 @@ Afterwards, add these lines to your `configuration.yaml`:
         resource: your_blnet_address
         password: optional_blnet_password
         can_node: optional_can_bus_node
+        use_ta: optional_enforce_use_ta_direct
+        scan_interval: optional_scan_interval_seconds
 
 Additional configuration options can be found in the `configurations.yaml` in this repo.
 
