@@ -6,21 +6,15 @@ Switch to control digital outputs
 import logging
 
 from homeassistant.const import (
-    STATE_UNKNOWN,
-    STATE_OFF,
-    STATE_ON,
-)
-
-try:
-    from homeassistant.components.switch import SwitchEntity
-except ImportError:
-    from homeassistant.components.switch import SwitchDevice as SwitchEntity
+    STATE_UNKNOWN)
+from homeassistant.components.switch import SwitchDevice
 
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'blnet'
 
 MODE = 'mode'
+FULLMODE = 'fullmode'
 FRIENDLY_NAME = 'friendly_name'
 
 
@@ -40,7 +34,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     return True
 
 
-class BLNETSwitch(SwitchEntity):
+class BLNETSwitch(SwitchDevice):
     """
     Representation of a switch that toggles a digital output of the UVR1611.
     """
@@ -56,7 +50,9 @@ class BLNETSwitch(SwitchEntity):
         self._assumed_state = True
         self._icon = None
         self._mode = STATE_UNKNOWN
+        self._fullmode = STATE_UNKNOWN
         self._last_updated = None
+        self._is_standby = None
 
     def update(self):
         """Get the latest data from communication device """
@@ -72,14 +68,22 @@ class BLNETSwitch(SwitchEntity):
             return
 
         self._friendly_name = sensor_data.get('friendly_name')
-        if sensor_data.get('value') == 1:
-            self._state = STATE_ON
+        if sensor_data.get('value') == 'EIN':
+            self._state = 'on'
+            if sensor_data.get('mode') == 'AUTO':
+                self._icon = 'mdi:cog-outline'
+            else:
+                self._icon = 'mdi:cog'
         # Nonautomated switch, toggled off => switch off
         else:
-            self._state = STATE_OFF
-        self._icon = sensor_data.get('icon')
-        self._mode = sensor_data.get('mode')
+            self._state = 'off'
+            if sensor_data.get('mode') == 'AUTO':
+                self._icon = 'mdi:cog-off-outline'
+            else:
+                self._icon = 'mdi:cog-off'
 
+        self._mode = sensor_data.get('mode')
+        self._fullmode = sensor_data.get('mode') + '/' + sensor_data.get('value')
         self._last_updated = last_blnet_update
         self._assumed_state = False
 
@@ -104,6 +108,7 @@ class BLNETSwitch(SwitchEntity):
         attrs = {}
 
         attrs[MODE] = self._mode
+        attrs[FULLMODE] = self._fullmode
         attrs[FRIENDLY_NAME] = self._friendly_name
         return attrs
 
@@ -114,22 +119,23 @@ class BLNETSwitch(SwitchEntity):
 
     def turn_on(self, **kwargs):
         """Turn the device on."""
-        self.communication.turn_on(self._id)
-        self._state = STATE_ON
-        self._assumed_state = True
+        if self._mode != 'AUTO':
+            self.communication.turn_on(self._id)
+            self._state = 'on'
+            self._assumed_state = True
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
-        self.communication.turn_off(self._id)
-        self._state = STATE_OFF
-        self._assumed_state = True
+        if self._mode != 'AUTO':
+            self.communication.turn_off(self._id)
+            self._state = 'off'
+            self._assumed_state = True
 
     @property
-    def assumed_state(self) -> bool:
+    def assumed_state(self)->bool:
         return self._assumed_state
 
-
-class BLNETModeSwitch(SwitchEntity):
+class BLNETModeSwitch(SwitchDevice):
     """
     Representation of a switch that toggles the operation mode
     of a digital output of the UVR1611. On means automated
@@ -145,6 +151,8 @@ class BLNETModeSwitch(SwitchEntity):
         self._state = STATE_UNKNOWN
         self._activation_state = self._state
         self._assumed_state = True
+        self._mode = STATE_UNKNOWN
+        self._fullmode = STATE_UNKNOWN
         self._icon = None
         self._last_updated = None
 
@@ -164,14 +172,27 @@ class BLNETModeSwitch(SwitchEntity):
         self._friendly_name = "{} automated".format(
             sensor_data.get('friendly_name'))
         if sensor_data.get('mode') == 'HAND':
-            self._state = STATE_OFF
-            self._icon = 'mdi:gesture-tap'
+            self._state = 'off'
+            if sensor_data.get('value') == 'EIN':
+                self._icon = 'mdi:cog-outline'
+            else:
+                self._icon = 'mdi:cog-off-outline'
+            self._mode = 'HAND'
         else:
-            self._state = STATE_ON
-            self._icon = 'mdi:settings'
+            self._state = 'on'
+            if sensor_data.get('value') == 'EIN':
+                self._mode = 'EIN'
+                self._icon = 'mdi:cog'
+            elif sensor_data.get('value') == 'AUS':
+                self._mode = 'AUS'
+                self._icon = 'mdi:cog-off'
+            else:
+                self._mode = 'unbekannt'
+                self._icon = 'mdi:cog-refresh-outline'
         
         self._activation_state = sensor_data.get('value')
 
+        self._fullmode = sensor_data.get('mode') + '/' + sensor_data.get('value')
         self._last_updated = last_blnet_update
         self._assumed_state = False
 
@@ -194,6 +215,8 @@ class BLNETModeSwitch(SwitchEntity):
     def device_state_attributes(self):
         """Return the state attributes of the device."""
         attrs = {}
+        attrs[MODE] = self._mode
+        attrs[FULLMODE] = self._fullmode
         attrs[FRIENDLY_NAME] = self._friendly_name
         return attrs
 
@@ -205,16 +228,16 @@ class BLNETModeSwitch(SwitchEntity):
     def turn_on(self, **kwargs):
         """Turn the device on."""
         self.communication.turn_auto(self._id)
-        self._state = STATE_ON
+        self._state = 'on'
         self._assumed_state = True
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
-        if self._activation_state == 1:
+        if self._activation_state == 'EIN':
             self.communication.turn_on(self._id)
         else:
             self.communication.turn_off(self._id)
-        self._state = STATE_OFF
+        self._state = 'off'
         self._assumed_state = True
 
     @property
