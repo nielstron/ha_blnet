@@ -3,7 +3,7 @@
 # BLNET custom component for Home Assistant
 
 A custom component to integrate the freely pogrammable heating controller called [UVR1611 by Technische Alternative](https://www.ta.co.at/en/freely-programmable/uvr1611/)
-into home assistant.
+via the BLNET web-interface into home assistant.
 
 ## Installation
 
