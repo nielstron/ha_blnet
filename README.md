@@ -22,7 +22,7 @@ There *is* the option to enable usage of the `ta_direct` protocal, which is howe
 
 The result:
 
-![Configured groups containing all available BLNet-supplied sensors](screenshot_blnet.png)
+![Configured groups containing all available BLNet-supplied sensors](screenshot_blnet.jpg)
 
 ## Example configuration
 
