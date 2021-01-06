@@ -18,12 +18,35 @@ Afterwards, add these lines to your `configuration.yaml`:
         can_node: optional_can_bus_node
         scan_interval: optional_scan_interval_seconds
 
-Additional configuration options can be found in the `configurations.yaml` in [this repo](https://github.com/nielstron/ha-config).
 There *is* the option to enable usage of the `ta_direct` protocal, which is however not properly working yet.
 
 The result:
 
 ![Configured groups containing all available BLNet-supplied sensors](screenshot_blnet.png)
+
+## Example configuration
+
+```yaml
+# Configuration for the BLNET component
+blnet:
+  # Host address of your blnet
+  resource: http://192.168.255.255
+  # Poll interval in seconds (Optional, Default: 360)
+  scan_interval: 360
+  # Expert access password of the web-interface (Optional, Default: None)
+  password: 1234
+  # Enable BLNet-Direct access (Broken, Optional, Default: False)
+  use_ta: false
+  # BLNet-Direct port (Optional, Default: 4000)
+  ta_port: 4000
+  # Enable Web interface access (Optional, Default: True)
+  # When set to false, switches are configured as sensors
+  use_web: true
+  # Webinterface port (Optional, Default: 80)
+  web_port: 80
+  # Can-Node to be used (Optional, Default: None - doesn't change the current setting at the BLNET)
+  can_node: 20
+```
 
 ## A few notes
 
