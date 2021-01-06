@@ -2,9 +2,12 @@
 
 # BLNET custom component for Home Assistant
 
-So there is a freely pogrammable heating controller called [UVR1611 by Technische Alternative](https://www.ta.co.at/en/freely-programmable/uvr1611/). Recently I wanted to have its data displayed in Home Assistant [(already accomplished that once via "UVR1611 Data Logger")](https://community.home-assistant.io/t/hooking-up-the-uvr1611-data-logger-over-wifi/24499). For that you need either the BLNET device or the CLI, in this case some scripts have been developed to assist integrating UVR data via a BLNET device.
+A custom component to integrate the freely pogrammable heating controller called [UVR1611 by Technische Alternative](https://www.ta.co.at/en/freely-programmable/uvr1611/)
+into home assistant.
 
-For you as a home assistant user, just copy the `custom_component/blnet` file structure into your custom_component directory or add this repository to [hacs](https://hacs.xyz/).
+## Installation
+
+Add this repository to [hacs](https://hacs.xyz/) or copy the `custom_component/blnet` file structure into your custom_component directory .
 
 Afterwards, add these lines to your `configuration.yaml`:
 
@@ -13,18 +16,23 @@ Afterwards, add these lines to your `configuration.yaml`:
         resource: your_blnet_address
         password: optional_blnet_password
         can_node: optional_can_bus_node
-        use_ta: optional_enforce_use_ta_direct
         scan_interval: optional_scan_interval_seconds
 
-Additional configuration options can be found in the `configurations.yaml` in this repo.
+Additional configuration options can be found in the `configurations.yaml` in [this repo](https://github.com/nielstron/ha-config).
+There *is* the option to enable usage of the `ta_direct` protocal, which is however not properly working yet.
 
 The result:
 
 ![Configured groups containing all available BLNet-supplied sensors](screenshot_blnet.png)
 
+## A few notes
 
-Customization is fully supported and digital outputs of the UVR1611 can be controlled. Yet from then on you have to create the groups yourself.
+- Customization is fully supported.
+- Grouping has to be manually accomplished.
+- Digital outputs of the UVR1611 can be controlled via created switch entities.
+- __Turning a switch off or on overrides the `AUTO` configuration and sets the switch to `HAND` until it is turned back to `AUTO` manually.__
 
-At the digital switches, :gear: is displayed if mode of digital output is set to "AUTO", else showing ![grafik](https://materialdesignicons.com/api/download/icon/png/D1AD4F4E-3CFE-4F51-932D-D3942A26C418) [mdi:toggle-switch] / ![grafik](https://materialdesignicons.com/api/download/icon/png/A54ADA14-0917-432E-9288-3364FBAEBCE2) [mdi:toggle-switch-off] 
+## Contributions
 
-If you are interested in developing that further feel free to contribute to either this component or the backend python script [pyblnet](https://github.com/nielstron/pyblnet).
+Feel free to open Pull Requests here or at
+the backend python script [pyblnet](https://github.com/nielstron/pyblnet).
