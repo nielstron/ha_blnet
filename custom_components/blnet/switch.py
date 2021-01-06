@@ -111,7 +111,7 @@ class BLNETSwitch(SwitchEntity):
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._state
+        return self._state == STATE_ON
 
     def turn_on(self, **kwargs):
         """Turn the device on."""
