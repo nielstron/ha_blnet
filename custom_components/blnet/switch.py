@@ -72,12 +72,13 @@ class BLNETSwitch(SwitchEntity):
             return
 
         self._friendly_name = sensor_data.get('friendly_name')
-        if sensor_data.get('value') == 1:
+        if sensor_data.get('value') == "EIN":
             self._state = STATE_ON
+            self._icon = 'mdi:flash'
         # Nonautomated switch, toggled off => switch off
         else:
             self._state = STATE_OFF
-        self._icon = sensor_data.get('icon')
+            self._icon = 'mdi:flash-off'
         self._mode = sensor_data.get('mode')
 
         self._last_updated = last_blnet_update
@@ -143,7 +144,7 @@ class BLNETModeSwitch(SwitchEntity):
         self._name = '{} automated'.format(blnet_id)
         self._friendly_name = blnet_id
         self._state = STATE_UNKNOWN
-        self._activation_state = self._state
+        self._activated = self._state
         self._assumed_state = True
         self._icon = None
         self._last_updated = None
@@ -165,12 +166,12 @@ class BLNETModeSwitch(SwitchEntity):
             sensor_data.get('friendly_name'))
         if sensor_data.get('mode') == 'HAND':
             self._state = STATE_OFF
-            self._icon = 'mdi:gesture-tap'
+            self._icon = 'mdi:cog-off'
         else:
             self._state = STATE_ON
-            self._icon = 'mdi:settings'
+            self._icon = 'mdi:cog'
         
-        self._activation_state = sensor_data.get('value')
+        self._activated = sensor_data.get('value')
 
         self._last_updated = last_blnet_update
         self._assumed_state = False
@@ -209,8 +210,10 @@ class BLNETModeSwitch(SwitchEntity):
         self._assumed_state = True
 
     def turn_off(self, **kwargs):
-        """Turn the device off."""
-        if self._activation_state == 1:
+        """Turn the device off, in this case meaning to turn off automation,
+        an sending a HAND/EIN or HAND/AUS turn manual control on."""
+
+        if self._activated == "EIN":
             self.communication.turn_on(self._id)
         else:
             self.communication.turn_off(self._id)

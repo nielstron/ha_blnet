@@ -66,7 +66,7 @@ CONFIG_SCHEMA = vol.Schema({
 def setup(hass, config):
     """Set up the BLNET component"""
 
-    from pyblnet import BLNET, test_blnet
+    from pyblnet import BLNET
 
     config = config[DOMAIN]
     resource = config.get(CONF_RESOURCE)
@@ -145,6 +145,34 @@ class BLNETComm(object):
 
         data = self.blnet.fetch(self.node)
 
+        _LOGGER.info("Collecting data...")
+        for domain in ['analog', 'speed', 'power', 'energy']:
+            # iterate through the list and store the data for every sensor
+            for key, sensor in data.get(domain, {}).items():
+                attributes = {}
+                entity_id = '{} {} {}'.format(DOMAIN, domain, key)
+                attributes['value'] = sensor.get('value')
+
+                attributes['unit_of_measurement'] = sensor.get('unit_of_measurement',
+                                                               UNIT[domain])
+                attributes['friendly_name'] = sensor.get('name')
+                attributes['icon'] = ICON[domain]
+
+                self.data[entity_id] = attributes
+
+        # iterate through the list and store data for every output
+        for key, sensor in data.get('digital', {}).items():
+            attributes = {}
+            entity_id = '{} digital {}'.format(DOMAIN, key)
+
+            attributes['friendly_name'] = sensor.get('name')
+            attributes['mode'] = sensor.get('mode')
+            attributes['value'] = sensor.get('value')
+
+            self.data[entity_id] = attributes
+        # save that the data was updated just now
+        self._last_updated = datetime.now()
+
         _LOGGER.info("Checking for new sensors...")
         # Check if there are new sensors that are to be added
         i = 0
@@ -164,7 +192,7 @@ class BLNETComm(object):
                 }
                 load_platform(self._hass, 'sensor', DOMAIN, disc_info, self._config)
 
-        # iterate through the list and create a sensor for every value
+        # iterate through the list and create a switch for direct control over every output
         for sensor_id in data['digital']:
             name = '{} digital {}'.format(DOMAIN, sensor_id)
             if name in self.sensors:
@@ -185,41 +213,4 @@ class BLNETComm(object):
         if i > 0:
             _LOGGER.info("Added overall {} sensors".format(i))
 
-        for domain in ['analog', 'speed', 'power', 'energy']:
-            # iterate through the list and create a sensor for every value
-            for key, sensor in data.get(domain, {}).items():
-                attributes = {}
-                entity_id = '{} {} {}'.format(DOMAIN, domain, key)
-                attributes['value'] = sensor.get('value')
-
-                attributes['unit_of_measurement'] = sensor.get('unit_of_measurement',
-                                                               UNIT[domain])
-                attributes['friendly_name'] = sensor.get('name')
-                attributes['icon'] = ICON[domain]
-
-                self.data[entity_id] = attributes
-
-        # iterate through the list and create a sensor for every value
-        for key, sensor in data.get('digital', {}).items():
-            attributes = {}
-            entity_id = '{} digital {}'.format(DOMAIN, key)
-
-            attributes['friendly_name'] = sensor.get('name')
-            attributes['mode'] = sensor.get('mode')
-            attributes['value'] = sensor.get('value')
-            # Change the symbol according to current mode and setting
-            # Automated switch => gear symbol
-            if sensor.get('mode') == 'AUTO':
-                attributes['icon'] = 'mdi:settings'
-            # Nonautomated switch, toggled on => switch on
-            elif sensor.get('mode') == 'EIN':
-                attributes['icon'] = 'mdi:toggle-switch'
-            # Nonautomated switch, toggled off => switch off
-            else:
-                attributes['icon'] = 'mdi:toggle-switch-off'
-
-            self.data[entity_id] = attributes
-
-        # save that the data was updated now
-        self._last_updated = datetime.now()
         return data
