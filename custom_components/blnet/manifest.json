@@ -5,7 +5,7 @@
   "requirements": [
     "pyblnet==0.9.1"
   ],
-  "dependencies": [],
+  "dependencies": {},
   "codeowners": ["@nielstron"],
   "version": "0.5.0"
 }
