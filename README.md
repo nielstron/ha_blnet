@@ -18,6 +18,8 @@ Afterwards, add these lines to your `configuration.yaml`:
         can_node: optional_can_bus_node
         scan_interval: optional_scan_interval_seconds
 
+**Password hint:** The component tries to log in as "Expert" (so enter its password here if it is set).
+
 There *is* the option to enable usage of the `ta_direct` protocal, which is however not properly working yet.
 
 The result:
