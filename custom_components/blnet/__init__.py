@@ -16,7 +16,7 @@ import time
 import homeassistant.helpers.config_validation as cv
 
 REQUIREMENTS = [
-    'pyblnet==0.9.1'
+    'pyblnet==0.9.3'
 ]
 
 _LOGGER = logging.getLogger(__name__)
