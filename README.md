@@ -36,7 +36,7 @@ blnet:
   # Poll interval in seconds (Optional, Default: 360)
   scan_interval: 360
   # Expert access password of the web-interface (Optional, Default: None)
-  password: 1234
+  password: "1234"
   # Enable BLNet-Direct access (Broken, Optional, Default: False)
   use_ta: false
   # BLNet-Direct port (Optional, Default: 4000)
@@ -56,6 +56,7 @@ blnet:
 - Grouping has to be manually accomplished.
 - Digital outputs of the UVR1611 can be controlled via created switch entities.
 - __Turning a switch off or on overrides the `AUTO` configuration and sets the switch to `HAND` until it is turned back to `AUTO` manually.__
+- if the password is all numbers and start with a leading zero quotes are required, otherwise the leading 0 will be ommitted and the password is incorrect
 
 ## Contributions
 
