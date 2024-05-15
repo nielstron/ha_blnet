@@ -56,7 +56,7 @@ blnet:
 - Grouping has to be manually accomplished.
 - Digital outputs of the UVR1611 can be controlled via created switch entities.
 - __Turning a switch off or on overrides the `AUTO` configuration and sets the switch to `HAND` until it is turned back to `AUTO` manually.__
-- if the password is all numbers and start with a leading zero quotes are required, otherwise the leading 0 will be ommitted and the password is incorrect
+- If the password is all numbers and start with a leading zero, add quotes around the password. If the quotes are omitted, the leading 0 is discarded and the password will not be correct.
 
 ## Contributions
 
