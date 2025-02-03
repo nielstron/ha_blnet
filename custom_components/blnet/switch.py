@@ -58,6 +58,11 @@ class BLNETSwitch(SwitchEntity):
         self._mode = STATE_UNKNOWN
         self._last_updated = None
 
+    @property
+    def unique_id(self):
+        """Home assist requires a unique ID property."""
+        return f"blnet_switch_{self._id}"
+    
     def update(self):
         """Get the latest data from communication device """
         # check if new data has arrived
@@ -149,6 +154,11 @@ class BLNETModeSwitch(SwitchEntity):
         self._icon = None
         self._last_updated = None
 
+    @property
+    def unique_id(self):
+        """Return a unique ID for the mode switch."""
+        return f"blnet_mode_switch_{self._id}"
+    
     def update(self):
         """Get the latest data from communication device """
         # check if new data has arrived

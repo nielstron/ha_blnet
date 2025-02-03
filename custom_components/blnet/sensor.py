@@ -31,13 +31,18 @@ class BLNETComponent(Entity):
 
     def __init__(self, hass, sensor_id, name, communication):
         """Initialize the BL-NET sensor."""
-        self._identifier = name
+        self._identifier = sensor_id
         self.communication = communication
         self._name = name
         self._friendly_name = name
         self._state = None
         self._unit_of_measurement = None
         self._icon = None
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return f"blnet_sensor_{self._identifier}"
 
     @property
     def name(self):
