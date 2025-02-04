@@ -190,11 +190,12 @@ class BLNETComm(object):
                 disc_info = {
                     'name': name,
                     'domain': domain,
-                    'id': sensor_id
+                    'id': sensor_id,
+                    'friendly_name': data[domain][sensor_id].get('name')
                 }
                 load_platform(self._hass, 'sensor', DOMAIN, disc_info, self._config)
 
-                _LOGGER.debug(f"Sensor data for {domain}[{sensor_id}]: {data[domain][sensor_id]}")
+                _LOGGER.debug(f"Sensor data for {domain}[{sensor_id}]: {data[domain][sensor_id]} - Disc info: {disc_info}")
 
         # iterate through the list and create a switch for direct control over every output
         for sensor_id in data['digital']:
