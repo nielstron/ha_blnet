@@ -125,10 +125,10 @@ class BLNETDataHandler:
 
     def update(self):
         """Update all data and handle sensor discovery."""
+        self._last_updated = datetime.now()
         data = self._fetch_data()
         self._update_sensor_data(data)
         self._discover_new_devices(data)
-        self._last_updated = datetime.now()
         return data
 
     def _fetch_data(self):
