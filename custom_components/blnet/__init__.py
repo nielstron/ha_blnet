@@ -119,11 +119,16 @@ class BLNETDataHandler:
         self._config = config
         self.sensors = set()
 
+    def last_updated(self):
+        """Return the timestamp of the last update."""
+        return self._last_updated
+
     def update(self):
         """Update all data and handle sensor discovery."""
         data = self._fetch_data()
         self._update_sensor_data(data)
         self._discover_new_devices(data)
+        self._last_updated = datetime.now()
         return data
 
     def _fetch_data(self):
@@ -135,7 +140,6 @@ class BLNETDataHandler:
         _LOGGER.info("Updating sensor data...")
         self._update_domain_sensors(data)
         self._update_digital_sensors(data)
-        self._last_updated = datetime.now()
 
     def _update_domain_sensors(self, data):
         """Update sensors for all domains."""
