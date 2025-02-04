@@ -19,21 +19,22 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
         return False
 
     sensor_id = discovery_info['id']
-    blnet_id = discovery_info['name']
+    blnet_id = discovery_info['blnet_id']
+    name = discovery_info['name']
     friendly_name = discovery_info['friendly_name']
     _LOGGER.debug(f"Discovery info: {discovery_info}")
     comm = hass.data['DATA_{}'.format(DOMAIN)]
 
-    add_devices([BLNETComponent(hass, sensor_id, blnet_id, friendly_name, comm)], True)
+    add_devices([BLNETComponent(hass, sensor_id, name, blnet_id, friendly_name, comm)], True)
     return True
 
 
 class BLNETComponent(Entity):
     """Implementation of a BL-NET - UVR1611 sensor and switch component."""
 
-    def __init__(self, hass, sensor_id, name, friendly_name, communication):
+    def __init__(self, hass, sensor_id, name, blnet_id, friendly_name, communication):
         """Initialize the BL-NET sensor."""
-        self._identifier = name
+        self._identifier = blnet_id
         self.communication = communication
         self._name = name
         self._friendly_name = friendly_name

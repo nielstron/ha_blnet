@@ -179,7 +179,8 @@ class BLNETComm(object):
         # iterate through the list and create a sensor for every value
         for domain in ['analog', 'speed', 'power', 'energy']:
             for sensor_id in data[domain]:
-                name = data[domain][sensor_id].get('name') #'{} {} {}'.format(DOMAIN, domain, sensor_id)
+                name = data[domain][sensor_id].get('name') # 
+                blnet_id = '{} {} {}'.format(DOMAIN, domain, sensor_id)
                 if name in self.sensors:
                     continue
                 self.sensors.add(name)
@@ -189,6 +190,7 @@ class BLNETComm(object):
 
                 disc_info = {
                     'name': name,
+                    'blnet_id': blnet_id,
                     'domain': domain,
                     'id': sensor_id,
                     'friendly_name': data[domain][sensor_id].get('name')
@@ -207,6 +209,7 @@ class BLNETComm(object):
             i += 1
             disc_info = {
                 'name': name,
+                'blnet_id': blnet_id,
                 'domain': 'digital',
                 'id': sensor_id,
                 'friendly_name': data['digital'][sensor_id].get('name')
