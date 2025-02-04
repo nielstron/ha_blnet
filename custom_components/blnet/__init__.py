@@ -111,6 +111,7 @@ class BLNETDataHandler:
     """Handles data operations for BLNET."""
 
     def __init__(self, blnet, node, hass, config):
+        """Initialize the data handler."""
         self.blnet = blnet
         self.node = node
         self.data = {}
@@ -122,6 +123,36 @@ class BLNETDataHandler:
     def last_updated(self):
         """Return the timestamp of the last update."""
         return self._last_updated
+
+    def turn_off(self, switch_id):
+        """Turn off a switch."""
+        _LOGGER.debug(f"Turning off switch {switch_id}")
+        try:
+            self.blnet.turn_off(switch_id, self.node)
+            return True
+        except Exception as ex:
+            _LOGGER.error(f"Error turning off switch {switch_id}: {ex}")
+            return False
+
+    def turn_on(self, switch_id):
+        """Turn on a switch."""
+        _LOGGER.debug(f"Turning on switch {switch_id}")
+        try:
+            self.blnet.turn_on(switch_id, self.node)
+            return True
+        except Exception as ex:
+            _LOGGER.error(f"Error turning on switch {switch_id}: {ex}")
+            return False
+
+    def turn_auto(self, switch_id):
+        """Set switch to auto mode."""
+        _LOGGER.debug(f"Setting switch {switch_id} to auto mode")
+        try:
+            self.blnet.turn_auto(switch_id, self.node)
+            return True
+        except Exception as ex:
+            _LOGGER.error(f"Error setting switch {switch_id} to auto: {ex}")
+            return False
 
     def update(self):
         """Update all data and handle sensor discovery."""
