@@ -182,6 +182,7 @@ class BLNETDataHandler:
     def _add_single_sensor(self, domain, sensor_id, data):
         """Add a single new sensor."""
         name = data[domain][sensor_id].get('name')
+        blnet_id = '{} {} {}'.format(DOMAIN, domain, sensor_id)
         if name in self.sensors:
             return False
 
@@ -192,7 +193,8 @@ class BLNETDataHandler:
             'name': name,
             'domain': domain,
             'id': sensor_id,
-            'friendly_name': name
+            'friendly_name': name,
+            'blnet_id': blnet_id
         }
         _LOGGER.debug(f"Sensor data for {domain}[{sensor_id}]: {data[domain][sensor_id]} - Disc info: {disc_info}")
         load_platform(self._hass, 'sensor', DOMAIN, disc_info, self._config)
@@ -209,6 +211,7 @@ class BLNETDataHandler:
     def _add_digital_device(self, sensor_id, data):
         """Add a single new digital device."""
         name = data['digital'][sensor_id].get('name')
+        blnet_id = '{} digital {}'.format(DOMAIN, sensor_id)
         if name in self.sensors:
             return False
 
@@ -219,7 +222,8 @@ class BLNETDataHandler:
             'name': name,
             'domain': 'digital',
             'id': sensor_id,
-            'friendly_name': name
+            'friendly_name': name,
+            'blnet_id': blnet_id
         }
         component = 'switch' if self._config[CONF_USE_WEB] else 'sensor'
         load_platform(self._hass, component, DOMAIN, disc_info, self._config)
