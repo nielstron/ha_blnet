@@ -42,14 +42,19 @@ class BLNETComponent(Entity):
         self._icon = None
 
     @property
-    def unique_id(self):
-        """Return a unique ID for the sensor."""
-        return f"blnet_sensor_{self._identifier}"
+    def friendly_name(self):
+        """Return the friendly name of the sensor."""
+        return self._friendly_name
 
     @property
     def name(self):
         """Return the name of the sensor."""
         return self._name
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return f"blnet_sensor_{self._identifier}"
 
     @property
     def state(self):
