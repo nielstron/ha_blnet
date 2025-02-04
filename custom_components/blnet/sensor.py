@@ -33,7 +33,7 @@ class BLNETComponent(Entity):
 
     def __init__(self, hass, sensor_id, name, friendly_name, communication):
         """Initialize the BL-NET sensor."""
-        self._identifier = friendly_name
+        self._identifier = friendly_name + "_" + sensor_id
         self.communication = communication
         self._friendly_name = friendly_name
         self._state = None
