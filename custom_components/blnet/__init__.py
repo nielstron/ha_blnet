@@ -184,13 +184,17 @@ class BLNETComm(object):
                     continue
                 self.sensors.add(name)
                 _LOGGER.info("Discovered {} sensor {} in use, adding".format(domain, sensor_id))
+                
                 i += 1
+
                 disc_info = {
                     'name': name,
                     'domain': domain,
-                    'id': sensor_id,
+                    'id': sensor_id
                 }
                 load_platform(self._hass, 'sensor', DOMAIN, disc_info, self._config)
+
+                _LOGGER.debug(f"Sensor data for {domain}[{sensor_id}]: {data[domain][sensor_id]}")
 
         # iterate through the list and create a switch for direct control over every output
         for sensor_id in data['digital']:

@@ -20,6 +20,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     sensor_id = discovery_info['id']
     blnet_id = discovery_info['name']
+    _LOGGER.debug(f"Discovery info: {discovery_info}")
     comm = hass.data['DATA_{}'.format(DOMAIN)]
 
     add_devices([BLNETComponent(hass, sensor_id, blnet_id, comm)], True)
@@ -31,7 +32,7 @@ class BLNETComponent(Entity):
 
     def __init__(self, hass, sensor_id, name, communication):
         """Initialize the BL-NET sensor."""
-        self._identifier = sensor_id
+        self._identifier = name
         self.communication = communication
         self._name = name
         self._friendly_name = name
@@ -74,11 +75,20 @@ class BLNETComponent(Entity):
 
     def update(self):
         """Get the latest data from communication device """
+        _LOGGER.debug(f"Trying to update sensor {self._identifier}")
+        _LOGGER.debug(f"Available data: {self.communication.data}")
+        
         sensor_data = self.communication.data.get(self._identifier)
 
+        # we simply set the identifier using the data from the sensor
+        self._identifier = self.communication.data.get('friendly_name')
+        self._name = self.communication.data.get('friendly_name')
+        
         if sensor_data is None:
+            _LOGGER.warning(f"No data found for sensor {self._identifier}")
             return
 
+        _LOGGER.debug(f"Found sensor data: {sensor_data}")
         self._friendly_name = sensor_data.get('friendly_name')
         self._state = sensor_data.get('value')
         self._unit_of_measurement = sensor_data.get('unit_of_measurement')
