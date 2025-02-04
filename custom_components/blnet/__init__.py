@@ -59,24 +59,46 @@ CONFIG_SCHEMA = vol.Schema({
 
 
 def setup(hass, config):
-    """Set up the BLNET component"""
+    """Set up the BLNET component."""
     from pyblnet import BLNET
 
+    # Extract configuration
     conf = config[DOMAIN]
-    blnet_connector = BLNETConnector(conf, BLNET)
+    resource = conf.get(CONF_RESOURCE)
+    password = conf.get(CONF_PASSWORD)
+    can_node = conf.get(CONF_NODE)
+    scan_interval = conf.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    web_port = conf.get(CONF_WEB_PORT, DEFAULT_WEB_PORT)
+    ta_port = conf.get(CONF_TA_PORT, DEFAULT_TA_PORT)
+    use_web = conf.get(CONF_USE_WEB, True)
+    use_ta = conf.get(CONF_USE_TA, False)
+
+    _LOGGER.debug(
+        f"Setting up BLNET with: resource={resource}, web_port={web_port}, "
+        f"ta_port={ta_port}, use_web={use_web}, use_ta={use_ta}"
+    )
+
+    blnet_connector = BLNETConnector(
+        resource=resource,
+        password=password,
+        web_port=web_port,
+        ta_port=ta_port,
+        use_web=use_web,
+        use_ta=use_ta
+    )
     
     try:
         blnet = blnet_connector.connect()
     except (ValueError, AssertionError) as ex:
-        _LOGGER.error(blnet_connector.get_error_message(ex, conf[CONF_RESOURCE]))
+        _LOGGER.error(f"Could not connect to BLNET at {resource}: {ex}")
         return False
 
     # Initialize the data handler
-    data_handler = BLNETDataHandler(blnet, conf.get(CONF_NODE), hass, conf)
+    data_handler = BLNETDataHandler(blnet, can_node, hass, conf)
     hass.data[f"DATA_{DOMAIN}"] = data_handler
 
     # Set up periodic updates
-    update_handler = BLNETUpdateHandler(hass, data_handler, conf[CONF_SCAN_INTERVAL])
+    update_handler = BLNETUpdateHandler(hass, data_handler, scan_interval)
     update_handler.schedule_updates()
 
     return True
@@ -85,19 +107,26 @@ def setup(hass, config):
 class BLNETConnector:
     """Handles connection to BLNET device."""
     
-    def __init__(self, config, blnet_class):
-        self.config = config
-        self.BLNET = blnet_class
+    def __init__(self, resource, password=None, web_port=DEFAULT_WEB_PORT,
+                 ta_port=DEFAULT_TA_PORT, use_web=True, use_ta=False):
+        """Initialize the connector with explicit parameters."""
+        self.resource = resource
+        self.password = password
+        self.web_port = web_port
+        self.ta_port = ta_port
+        self.use_web = use_web
+        self.use_ta = use_ta
 
     def connect(self):
         """Create and return BLNET connection."""
-        return self.BLNET(
-            self.config[CONF_RESOURCE],
-            password=self.config.get(CONF_PASSWORD),
-            web_port=self.config[CONF_WEB_PORT],
-            ta_port=self.config[CONF_TA_PORT],
-            use_web=self.config[CONF_USE_WEB],
-            use_ta=self.config[CONF_USE_TA]
+        from pyblnet import BLNET
+        return BLNET(
+            self.resource,
+            password=self.password,
+            web_port=self.web_port,
+            ta_port=self.ta_port,
+            use_web=self.use_web,
+            use_ta=self.use_ta
         )
 
     def get_error_message(self, exception, resource):
