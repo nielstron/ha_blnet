@@ -32,11 +32,12 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
         return False
 
     switch_id = discovery_info['id']
-    blnet_id = discovery_info['name']
+    blnet_id = discovery_info['blnet_id']
+    name = discovery_info['name']
     comm = hass.data['DATA_{}'.format(DOMAIN)]
 
-    add_devices([BLNETSwitch(switch_id, blnet_id, comm),
-                 BLNETModeSwitch(switch_id, blnet_id, comm)], True)
+    add_devices([BLNETSwitch(switch_id, blnet_id, name, comm),
+                 BLNETModeSwitch(switch_id, blnet_id, name, comm)], True)
     return True
 
 
@@ -45,19 +46,24 @@ class BLNETSwitch(SwitchEntity):
     Representation of a switch that toggles a digital output of the UVR1611.
     """
 
-    def __init__(self, switch_id, blnet_id, comm):
+    def __init__(self, switch_id, blnet_id, name, comm):
         """Initialize the switch."""
         self._blnet_id = blnet_id
         self._id = switch_id
         self.communication = comm
-        self._name = blnet_id
-        self._friendly_name = blnet_id
+        self._name = name
+        self._friendly_name = name
         self._state = STATE_UNKNOWN
         self._assumed_state = True
         self._icon = None
         self._mode = STATE_UNKNOWN
         self._last_updated = None
 
+    @property
+    def unique_id(self):
+        """Home assist requires a unique ID property."""
+        return f"blnet_switch_{self._id}"
+    
     def update(self):
         """Get the latest data from communication device """
         # check if new data has arrived
@@ -136,19 +142,24 @@ class BLNETModeSwitch(SwitchEntity):
     of a digital output of the UVR1611. On means automated
     """
 
-    def __init__(self, switch_id, blnet_id, comm):
+    def __init__(self, switch_id, blnet_id, name, comm):
         """Initialize the switch."""
         self._blnet_id = blnet_id
         self._id = switch_id
         self.communication = comm
-        self._name = '{} automated'.format(blnet_id)
-        self._friendly_name = blnet_id
+        self._name = name
+        self._friendly_name = name
         self._state = STATE_UNKNOWN
         self._activated = self._state
         self._assumed_state = True
         self._icon = None
         self._last_updated = None
 
+    @property
+    def unique_id(self):
+        """Return a unique ID for the mode switch."""
+        return f"blnet_mode_switch_{self._id}"
+    
     def update(self):
         """Get the latest data from communication device """
         # check if new data has arrived
