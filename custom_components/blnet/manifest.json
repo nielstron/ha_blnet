@@ -3,9 +3,9 @@
   "name": "BLNET",
   "documentation": "https://github.com/nielstron/ha_blnet/blob/master/README.md",
   "requirements": [
-    "pyblnet==0.9.5"
+    "pyblnet @ git+https://github.com/nielstron/pyblnet@read_digital_inputs"
   ],
   "dependencies": [],
   "codeowners": ["@nielstron"],
-  "version": "0.6.0"
+  "version": "0.7.0"
 }
